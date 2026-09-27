@@ -18,7 +18,6 @@ const  Exercise=async()=>{
     <main className="min-h-screen bg-[#0c0d0f] px-4 py-6 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1232px]">
 
-        {/* Header */}
         <div className="mb-5">
           <h1 className="text-2xl font-extrabold tracking-tight">
             THE LIBRARY
@@ -29,8 +28,7 @@ const  Exercise=async()=>{
           </p>
         </div>
 
-        {/* Exercise Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-[100]">
           {exercises.map((exercise) => (
             <ExerciseCard
               key={exercise.id}

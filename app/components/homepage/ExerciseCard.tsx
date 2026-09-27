@@ -2,9 +2,8 @@ import Image from "next/image";
 
 const ExerciseCard = ({ exercise }) => {
   return (
-    <article className="overflow-hidden rounded-lg border border-[#272a2f] bg-[#15171b] transition duration-200 hover:border-[#3a3e45]">
+    <article className="overflow-hidden rounded-lg border border-[#272a2f] bg-[#15171b] transition duration-200 hover:border-[#453a3a]">
 
-      {/* Image */}
       <div className="relative h-[190px] w-full overflow-hidden">
         <Image
           src={exercise.image}
@@ -15,10 +14,8 @@ const ExerciseCard = ({ exercise }) => {
         />
       </div>
 
-      {/* Card Content */}
       <div className="px-5 py-6">
 
-        {/* Tags */}
         <div className="mb-4 flex flex-wrap gap-2">
           {exercise.muscleGroups.map((muscle) => (
             <span
@@ -34,17 +31,14 @@ const ExerciseCard = ({ exercise }) => {
           </span>
         </div>
 
-        {/* Exercise Name */}
         <h2 className="text-[16px] font-extrabold uppercase leading-tight text-white">
           {exercise.name}
         </h2>
 
-        {/* Equipment */}
         <p className="mt-1.5 text-[12px] text-gray-500">
           {exercise.equipment}
         </p>
 
-        {/* Stats */}
         <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-gray-400">
           <span>
             ◷ {exercise.duration} min
