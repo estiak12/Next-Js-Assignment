@@ -1,6 +1,24 @@
 import Image from "next/image";
 import ExerciseCard from "./ExerciseCard";
 
+interface Prop{
+  id: number;
+  name: string;
+  image: string;
+  muscleGroups: string[];
+  equipment: string;
+  difficulty: string;
+  duration: number;
+  caloriesBurned: number;
+  sets: number;
+  reps: string;
+  rating: number;
+  description: string;
+  instructions: string[];
+}
+
+
+
 async function getExercises() {
   const response = await fetch('https://api.abcz.workers.dev/api/fitlog');
 
@@ -29,7 +47,7 @@ const  Exercise=async()=>{
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-[100]">
-          {exercises.map((exercise) => (
+          {exercises.map((exercise:Prop) => (
             <ExerciseCard
               key={exercise.id}
               exercise={exercise}

@@ -1,7 +1,13 @@
+import Exercise from "@/app/type";
 import Image from "next/image";
 import Link from "next/link";
 
-const ExerciseCard = ({ exercise }) => {
+
+interface exprop{
+  exercise:Exercise;
+}
+
+const ExerciseCard = ({ exercise }:exprop) => {
   return (
     <Link
       href={`/Exercises/${exercise.id}`}
