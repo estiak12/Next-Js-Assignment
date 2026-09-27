@@ -1,3 +1,4 @@
+import PlanButtons from "@/app/components/Button/PlanButtons";
 import Image from "next/image";
 
 async function getExercise(id: string) {
@@ -183,14 +184,7 @@ const ExerciseDetails = async ({
           {/* BUTTONS */}
           <div className="mt-7 flex flex-wrap gap-3">
 
-            <button className="rounded-md bg-[#c8ff00] px-5 py-3 text-xs font-bold text-black transition hover:bg-[#b7ed00]">
-              Add to today's plan
-            </button>
-
-            <button className="rounded-md border border-[#363a40] px-5 py-3 text-xs font-medium text-gray-300 transition hover:bg-[#17191d]">
-              ♡ Save for later
-            </button>
-
+           <PlanButtons exercise={exercise} />
           </div>
 
         </div>
