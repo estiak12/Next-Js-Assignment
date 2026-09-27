@@ -21,14 +21,14 @@ const Navbar = () => {
         </Link>
         <div className="flex items-center gap-2">
           <Link
-            href="/workouts"
+            href="/"
             className="rounded-full bg-[#17240b] px-4 py-1.5 text-[15px] font-semibold text-lime-400"
           >
             Workouts
           </Link>
 
           <Link
-            href="/plan"
+            href="/my-plan"
             className="px-4 py-1.5 text-[14px] font-medium text-zinc-400 transition hover:text-white"
           >
             My Plan
