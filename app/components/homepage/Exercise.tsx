@@ -1,25 +1,8 @@
 import Image from "next/image";
 import ExerciseCard from "./ExerciseCard";
+import { Exercise as ExerciseType } from "@/app/type";
 
-interface Prop{
-  id: number;
-  name: string;
-  image: string;
-  muscleGroups: string[];
-  equipment: string;
-  difficulty: string;
-  duration: number;
-  caloriesBurned: number;
-  sets: number;
-  reps: string;
-  rating: number;
-  description: string;
-  instructions: string[];
-}
-
-
-
-async function getExercises() {
+async function getExercises(): Promise<ExerciseType[]> {
   const response = await fetch('https://api.abcz.workers.dev/api/fitlog');
 
   if (!response.ok) {
@@ -29,7 +12,7 @@ async function getExercises() {
   return response.json();
 }
 
-const  Exercise=async()=>{
+const Exercise = async () => {
   const exercises = await getExercises();
 
   return (
@@ -47,7 +30,7 @@ const  Exercise=async()=>{
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-[100]">
-          {exercises.map((exercise:Prop) => (
+          {exercises.map((exercise: ExerciseType) => (
             <ExerciseCard
               key={exercise.id}
               exercise={exercise}

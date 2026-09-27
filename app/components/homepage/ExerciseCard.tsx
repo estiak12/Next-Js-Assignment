@@ -1,13 +1,12 @@
-import Exercise from "@/app/type";
+import { Exercise } from "@/app/type";
 import Image from "next/image";
 import Link from "next/link";
 
-
-interface exprop{
-  exercise:Exercise;
+interface ExerciseCardProps {
+  exercise: Exercise;
 }
 
-const ExerciseCard = ({ exercise }:exprop) => {
+const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
   return (
     <Link
       href={`/Exercises/${exercise.id}`}
@@ -28,7 +27,7 @@ const ExerciseCard = ({ exercise }:exprop) => {
         <div className="px-5 py-6">
 
           <div className="mb-4 flex flex-wrap gap-2">
-            {exercise.muscleGroups.map((muscle) => (
+            {exercise.muscleGroups.map((muscle: string) => (
               <span
                 key={muscle}
                 className="rounded bg-[#c8ff00] px-2.5 py-1 text-[10px] font-bold uppercase text-black"
@@ -51,21 +50,10 @@ const ExerciseCard = ({ exercise }:exprop) => {
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-gray-400">
-            <span>
-              ◷ {exercise.duration} min
-            </span>
-
-            <span>
-              🔥 {exercise.caloriesBurned} kcal
-            </span>
-
-            <span>
-              ▣ {exercise.sets} sets
-            </span>
-
-            <span>
-              ★ {exercise.rating}
-            </span>
+            <span>◷ {exercise.duration} min</span>
+            <span>🔥 {exercise.caloriesBurned} kcal</span>
+            <span>▣ {exercise.sets} sets</span>
+            <span>★ {exercise.rating}</span>
           </div>
 
         </div>
