@@ -1,18 +1,14 @@
-
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
-import { useContext } from "react";
+import { Suspense, useContext } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import { PlanContext } from "../../context/PlanContext";
 
-const Navbar = () => {
-  const {
-    todayPlan,
-    savedExercises,
-  } = useContext(PlanContext);
+const NavbarContent = () => {
+  const { todayPlan, savedExercises } = useContext(PlanContext);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -28,32 +24,20 @@ const Navbar = () => {
   // =========================
 
   const isWorkoutPage =
-    pathname === "/" ||
-    pathname.startsWith("/Exercises");
+    pathname === "/" || pathname.startsWith("/Exercises");
 
-  const isMyPlanPage =
-    pathname === "/my-plan";
+  const isMyPlanPage = pathname === "/my-plan";
 
   const isTodayPlanActive =
-    isMyPlanPage &&
-    (currentTab === "today" || currentTab === null);
+    isMyPlanPage && (currentTab === "today" || currentTab === null);
 
-  const isSavedActive =
-    isMyPlanPage &&
-    currentTab === "saved";
+  const isSavedActive = isMyPlanPage && currentTab === "saved";
 
   return (
     <nav className="w-full border-b border-zinc-800 bg-[#0b0c0e]">
       <div className="mx-auto flex min-h-[68px] max-w-[1200px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-
-        {/* =========================
-            LOGO
-        ========================= */}
-
-        <Link
-          href="/"
-          className="flex shrink-0 items-center gap-2"
-        >
+        {/* LOGO */}
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
             src="/logo.png"
             alt="FITLOG Logo"
@@ -67,14 +51,8 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* =========================
-            MAIN NAVIGATION
-        ========================= */}
-
+        {/* MAIN NAVIGATION */}
         <div className="flex items-center gap-1 sm:gap-2">
-
-          {/* Workouts */}
-
           <Link
             href="/"
             className={`
@@ -90,8 +68,6 @@ const Navbar = () => {
             Workouts
           </Link>
 
-          {/* My Plan */}
-
           <Link
             href="/my-plan?tab=today"
             className={`
@@ -106,19 +82,11 @@ const Navbar = () => {
           >
             My Plan
           </Link>
-
         </div>
 
-        {/* =========================
-            PLAN + SAVED
-        ========================= */}
-
+        {/* PLAN + SAVED */}
         <div className="flex shrink-0 items-center gap-3 text-xs sm:gap-6">
-
-          {/* =========================
-              TODAY'S PLAN
-          ========================= */}
-
+          {/* TODAY'S PLAN */}
           <Link
             href="/my-plan?tab=today"
             className={`
@@ -130,38 +98,15 @@ const Navbar = () => {
               }
             `}
           >
-            {/* Desktop */}
+            <span className="hidden text-[12px] sm:inline">Plan</span>
+            <span className="text-[11px] sm:hidden">P</span>
 
-            <span className="hidden text-[12px] sm:inline">
-              Plan
-            </span>
-
-            {/* Mobile */}
-
-            <span className="text-[11px] sm:hidden">
-              P
-            </span>
-
-            {/* Count */}
-
-            <span
-              className={`
-                flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold
-                ${
-                  isTodayPlanActive
-                    ? "bg-lime-400 text-black"
-                    : "bg-lime-400 text-black"
-                }
-              `}
-            >
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-lime-400 px-1 text-[9px] font-bold text-black">
               {todayPlan.length}
             </span>
           </Link>
 
-          {/* =========================
-              SAVED
-          ========================= */}
-
+          {/* SAVED */}
           <Link
             href="/my-plan?tab=saved"
             className={`
@@ -173,19 +118,8 @@ const Navbar = () => {
               }
             `}
           >
-            {/* Desktop */}
-
-            <span className="hidden text-[12px] sm:inline">
-              Saved
-            </span>
-
-            {/* Mobile */}
-
-            <span className="text-[11px] sm:hidden">
-              S
-            </span>
-
-            {/* Count */}
+            <span className="hidden text-[12px] sm:inline">Saved</span>
+            <span className="text-[11px] sm:hidden">S</span>
 
             <span
               className={`
@@ -200,11 +134,21 @@ const Navbar = () => {
               {savedExercises.length}
             </span>
           </Link>
-
         </div>
-
       </div>
     </nav>
+  );
+};
+
+const Navbar = () => {
+  return (
+    <Suspense
+      fallback={
+        <nav className="min-h-[68px] w-full border-b border-zinc-800 bg-[#0b0c0e]" />
+      }
+    >
+      <NavbarContent />
+    </Suspense>
   );
 };
 
