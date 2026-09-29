@@ -1,18 +1,18 @@
-
 "use client";
 
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { X, Clock, Flame, Dumbbell, Star } from "lucide-react";
+import { toast } from "react-toastify";
 
 import {
   PlanContext,
-  type Exercise,
+  Exercise,
 } from "../context/PlanContext";
 
 const MyPlan = () => {
-  const [activeTab, setActiveTab] = useState<"today" | "saved">("today");
-
   const {
     todayPlan,
     setTodayPlan,
@@ -20,404 +20,360 @@ const MyPlan = () => {
     setSavedExercises,
   } = useContext(PlanContext);
 
-  const exercises =
+  const searchParams = useSearchParams();
+
+  const [activeTab, setActiveTab] = useState<
+    "today" | "saved"
+  >("today");
+
+  
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+
+    if (tab === "saved") {
+      setActiveTab("saved");
+    } else {
+      setActiveTab("today");
+    }
+  }, [searchParams]);
+
+ 
+  const currentExercises =
     activeTab === "today"
       ? todayPlan
       : savedExercises;
 
-  const totalMinutes = todayPlan.reduce(
-    (total, exercise) => total + exercise.duration,
+  
+
+  const totalExercises = currentExercises.length;
+
+  const totalMinutes = currentExercises.reduce(
+    (total, exercise) =>
+      total + Number(exercise.duration),
     0
   );
 
-  const totalCalories = todayPlan.reduce(
-    (total, exercise) => total + exercise.caloriesBurned,
+  const totalCalories = currentExercises.reduce(
+    (total, exercise) =>
+      total + Number(exercise.caloriesBurned),
     0
   );
+
+
+  const handleTabChange = (
+    tab: "today" | "saved"
+  ) => {
+    setActiveTab(tab);
+  };
+
+
 
   const removeFromTodayPlan = (id: number) => {
-    setTodayPlan(
-      todayPlan.filter((exercise) => exercise.id !== id)
+    setTodayPlan((prev) =>
+      prev.filter((exercise) => exercise.id !== id)
     );
   };
+
 
   const removeFromSaved = (id: number) => {
-    setSavedExercises(
-      savedExercises.filter((exercise) => exercise.id !== id)
+    setSavedExercises((prev) =>
+      prev.filter((exercise) => exercise.id !== id)
     );
   };
 
+ 
   const handleRemove = (exercise: Exercise) => {
     if (activeTab === "today") {
       removeFromTodayPlan(exercise.id);
+
+      toast.success(
+        `${exercise.name} removed from today's plan`
+      );
     } else {
       removeFromSaved(exercise.id);
+
+      toast.success(
+        `${exercise.name} removed from saved`
+      );
     }
   };
 
   return (
-    <main
-      className="
-        min-h-screen
-        bg-[#0c0d0f]
-        px-4
-        py-7
-        text-white
+    <main className="min-h-screen bg-slate-950 px-4 py-8 md:px-8 lg:px-12">
+      <div className="mx-auto max-w-7xl">
 
-        sm:px-6
-        sm:py-9
 
-        lg:px-8
-        lg:py-10
-      "
-    >
-      <div className="mx-auto max-w-[1232px]">
-
-        {/* HEADER */}
-        <div>
-          <h1
-            className="
-              text-2xl
-              font-extrabold
-              uppercase
-              tracking-tight
-
-              sm:text-3xl
-            "
-          >
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white md:text-4xl">
             My Plan
           </h1>
 
-          <p className="mt-1 text-[10px] leading-5 text-gray-500 sm:text-[11px]">
-            Cap of five lifts for today. Finish them, then load more.
+          <p className="mt-2 text-slate-400">
+            Manage your workout plan and saved exercises.
           </p>
         </div>
 
-        {/* SUMMARY */}
-        <div
-          className="
-            mt-5
-            grid
-            grid-cols-3
-            overflow-hidden
-            rounded-xl
-            border
-            border-[#252930]
-            bg-[#15181e]
-          "
-        >
-          {/* EXERCISES */}
-          <div className="px-3 py-4 sm:px-4 sm:py-5">
-            <p className="text-[8px] text-gray-500 sm:text-[9px]">
-              Exercises
-            </p>
 
-            <p className="mt-1 text-xl font-extrabold text-[#c8ff00] sm:text-2xl">
-              {todayPlan.length}
-            </p>
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+      
+
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+            <div className="flex items-center gap-4">
+
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10">
+                <Dumbbell className="h-6 w-6 text-blue-400" />
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-400">
+                  Exercises
+                </p>
+
+                <p className="text-2xl font-bold text-white">
+                  {totalExercises}
+                </p>
+              </div>
+
+            </div>
           </div>
 
-          {/* MINUTES */}
-          <div className="border-l border-[#252930] px-3 py-4 sm:border-l-0 sm:border-r sm:px-4 sm:py-5">
-            <p className="text-[8px] text-gray-500 sm:text-[9px]">
-              Minutes
-            </p>
 
-            <p className="mt-1 text-xl font-extrabold text-white sm:text-2xl">
-              {totalMinutes}
-            </p>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+            <div className="flex items-center gap-4">
+
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-500/10">
+                <Clock className="h-6 w-6 text-green-400" />
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-400">
+                  Minutes
+                </p>
+
+                <p className="text-2xl font-bold text-white">
+                  {totalMinutes}
+                </p>
+              </div>
+
+            </div>
           </div>
 
-          {/* CALORIES */}
-          <div className="border-l border-[#252930] px-3 py-4 sm:px-4 sm:py-5">
-            <p className="text-[8px] text-gray-500 sm:text-[9px]">
-              Calories
-            </p>
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+            <div className="flex items-center gap-4">
 
-            <p className="mt-1 text-xl font-extrabold text-white sm:text-2xl">
-              {totalCalories}
-            </p>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/10">
+                <Flame className="h-6 w-6 text-orange-400" />
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-400">
+                  Calories
+                </p>
+
+                <p className="text-2xl font-bold text-white">
+                  {totalCalories}
+                </p>
+              </div>
+
+            </div>
           </div>
+
         </div>
 
-        {/* TABS */}
-        <div className="mt-5 flex">
-          <div className="flex w-full max-w-[280px] rounded-md border border-[#252930] bg-[#15181e] p-1">
-            <button
-              onClick={() => setActiveTab("today")}
-              className={`
-                flex-1
-                rounded
-                px-3
-                py-2
-                text-[9px]
-                transition
+   
+        <div className="mb-8 flex w-full rounded-xl border border-slate-800 bg-slate-900 p-1">
 
-                sm:px-4
-              ${
-                activeTab === "today"
-                  ? "bg-[#252a31] font-semibold text-white"
-                  : "text-gray-500 hover:text-white"
-              }`}
-            >
-              Today's Plan
-            </button>
+          <button
+            onClick={() => handleTabChange("today")}
+            className={`flex-1 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${
+              activeTab === "today"
+                ? "bg-blue-600 text-white"
+                : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`}
+          >
+            Today's Plan
+          </button>
 
-            <button
-              onClick={() => setActiveTab("saved")}
-              className={`
-                flex-1
-                rounded
-                px-3
-                py-2
-                text-[9px]
-                transition
+          <button
+            onClick={() => handleTabChange("saved")}
+            className={`flex-1 rounded-lg px-4 py-3 text-sm font-semibold transition-all ${
+              activeTab === "saved"
+                ? "bg-blue-600 text-white"
+                : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`}
+          >
+            Saved
+          </button>
 
-                sm:px-5
-              ${
-                activeTab === "saved"
-                  ? "bg-[#252a31] font-semibold text-white"
-                  : "text-gray-500 hover:text-white"
-              }`}
-            >
-              Saved
-            </button>
-          </div>
         </div>
 
-        {exercises.length > 0 ? (
-          <div className="mt-4 flex flex-col gap-3 pb-10">
 
-            {exercises.map((exercise) => (
-              <article
+        {currentExercises.length === 0 ? (
+
+          <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-900 px-6 py-16 text-center">
+
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-800">
+              <Dumbbell className="h-8 w-8 text-slate-500" />
+            </div>
+
+            <h2 className="text-xl font-semibold text-white">
+              {activeTab === "today"
+                ? "Your plan is empty"
+                : "No saved exercises"}
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-400">
+              {activeTab === "today"
+                ? "Add some exercises to your today's plan to start your workout."
+                : "Save exercises that you want to do later."}
+            </p>
+
+            <Link
+              href="/Exercises"
+              className="mt-6 inline-flex rounded-lg bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+            >
+              Browse Exercises
+            </Link>
+
+          </div>
+
+        ) : (
+
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+            {currentExercises.map((exercise) => (
+
+              <div
                 key={exercise.id}
-                className="
-                  flex
-                  min-h-[82px]
-                  w-full
-                  items-center
-                  gap-3
-                  rounded-xl
-                  border
-                  border-[#272a2f]
-                  bg-[#15171b]
-                  px-2.5
-                  py-2.5
-
-                  sm:gap-4
-                  sm:px-3
-                "
+                className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 transition-all hover:border-slate-700"
               >
-                <Link
-                  href={`/Exercises/${exercise.id}`}
-                  className="shrink-0"
-                >
-                  <div
-                    className="
-                      relative
-                      h-[54px]
-                      w-[78px]
-                      overflow-hidden
-                      rounded-lg
 
-                      sm:h-[58px]
-                      sm:w-[102px]
-                    "
-                  >
+
+                <button
+                  onClick={() => handleRemove(exercise)}
+                  aria-label={`Remove ${exercise.name}`}
+                  className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-slate-950/80 text-slate-400 backdrop-blur transition hover:bg-red-500 hover:text-white"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+
+                <div className="flex flex-col sm:flex-row">
+
+
+                  <div className="relative h-52 w-full shrink-0 overflow-hidden sm:h-auto sm:w-48">
+
                     <Image
                       src={exercise.image}
                       alt={exercise.name}
                       fill
-                      sizes="(max-width: 640px) 78px, 102px"
-                      className="object-cover transition duration-300 hover:scale-105"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
+
                   </div>
-                </Link>
 
-                {/* CONTENT */}
-                <div className="min-w-0 flex-1">
 
-                  <Link href={`/Exercises/${exercise.id}`}>
-                    <h2
-                      className="
-                        truncate
-                        text-[12px]
-                        font-extrabold
-                        uppercase
-                        leading-tight
-                        hover:text-[#c8ff00]
+                  <div className="flex flex-1 flex-col p-5">
 
-                        sm:text-[15px]
-                      "
-                    >
-                      {exercise.name}
-                    </h2>
-                  </Link>
+                    <div className="pr-8">
 
-                  <p className="mt-1 truncate text-[10px] text-gray-500 sm:text-[12px]">
-                    {exercise.equipment}
-                  </p>
+                      <h2 className="text-lg font-bold text-white">
+                        {exercise.name}
+                      </h2>
 
-                  <div
-                    className="
-                      mt-1.5
-                      flex
-                      flex-wrap
-                      items-center
-                      gap-x-2
-                      gap-y-1
-                      text-[9px]
-                      text-gray-400
+                      <p className="mt-1 text-sm text-slate-400">
+                        {exercise.equipment}
+                      </p>
 
-                      sm:mt-2
-                      sm:gap-x-4
-                      sm:text-[11px]
-                    "
-                  >
-                    <span className="whitespace-nowrap">
-                      ◷ {exercise.duration} min
-                    </span>
+                    </div>
 
-                    <span className="whitespace-nowrap">
-                      🔥 {exercise.caloriesBurned} kcal
-                    </span>
 
-                    <span className="whitespace-nowrap">
-                      ★ {exercise.rating}
-                    </span>
+                    <div className="mt-4 grid grid-cols-2 gap-3">
+
+                      <div className="flex items-center gap-2 text-sm text-slate-300">
+
+                        <Clock className="h-4 w-4 text-blue-400" />
+
+                        <span>
+                          {exercise.duration} min
+                        </span>
+
+                      </div>
+
+                      <div className="flex items-center gap-2 text-sm text-slate-300">
+
+                        <Flame className="h-4 w-4 text-orange-400" />
+
+                        <span>
+                          {exercise.caloriesBurned} kcal
+                        </span>
+
+                      </div>
+
+                    </div>
+
+
+                    <div className="mt-3 flex items-center gap-2">
+
+                      <div className="flex items-center gap-1">
+
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+
+                        <span className="text-sm font-medium text-white">
+                          {exercise.rating}
+                        </span>
+
+                      </div>
+
+                      <span className="text-sm text-slate-500">
+                        •
+                      </span>
+
+                      <span className="text-sm text-slate-400">
+                        {exercise.difficulty}
+                      </span>
+
+                    </div>
+
+                    
+
+                    <div className="mt-5 flex items-center gap-3">
+
+                      <Link
+                        href={`/Exercises/${exercise.id}`}
+                        className="flex-1 rounded-lg border border-slate-700 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-slate-800"
+                      >
+                        View Details
+                      </Link>
+
+                      {activeTab === "today" && (
+                        <button
+                          onClick={() =>
+                            toast.success(
+                              `${exercise.name} marked as done!`
+                            )
+                          }
+                          className="hidden rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 sm:block"
+                        >
+                          Mark as Done
+                        </button>
+                      )}
+
+                    </div>
+
                   </div>
+
                 </div>
 
-                {/* DESKTOP BUTTONS */}
-                <div className="hidden shrink-0 items-center gap-2 sm:flex">
+              </div>
 
-                  <Link
-                    href={`/Exercises/${exercise.id}`}
-                    className="
-                      rounded-full
-                      border
-                      border-[#30343b]
-                      px-3
-                      py-2
-                      text-[10px]
-                      font-medium
-                      text-gray-300
-                      transition
-                      hover:border-gray-500
-                      hover:text-white
-
-                      lg:px-4
-                    "
-                  >
-                    View Details
-                  </Link>
-
-                  <button
-                    className="
-                      rounded-full
-                      bg-[#c8ff00]
-                      px-3
-                      py-2
-                      text-[10px]
-                      font-bold
-                      text-black
-                      transition
-                      hover:bg-[#b7ed00]
-
-                      lg:px-4
-                    "
-                  >
-                    ✓ Mark as Done
-                  </button>
-                </div>
-
-                <Link
-                  href={`/Exercises/${exercise.id}`}
-                  className="
-                    shrink-0
-                    rounded-full
-                    border
-                    border-[#30343b]
-                    px-2.5
-                    py-1.5
-                    text-[9px]
-                    text-gray-300
-                    transition
-                    hover:text-white
-
-                    sm:hidden
-                  "
-                >
-                  View
-                </Link>
-
-                <button
-                  onClick={() => handleRemove(exercise)}
-                  className="
-                    shrink-0
-                    px-1
-                    text-[17px]
-                    font-light
-                    text-gray-500
-                    transition
-                    hover:text-red-400
-                  "
-                  aria-label={`Remove ${exercise.name}`}
-                >
-                  ×
-                </button>
-              </article>
             ))}
 
           </div>
-        ) : (
 
-          <div
-            className="
-              mt-4
-              flex
-              min-h-[205px]
-              flex-col
-              items-center
-              justify-center
-              rounded-lg
-              border
-              border-dashed
-              border-[#252930]
-              bg-[#0d0f12]
-              px-5
-              text-center
-            "
-          >
-            <h2 className="text-sm font-extrabold uppercase">
-              Nothing Here Yet
-            </h2>
-
-            <p className="mt-1 max-w-[400px] text-[10px] leading-5 text-gray-500">
-              {activeTab === "today"
-                ? "Browse the library and add a lift to get today moving."
-                : "Save an exercise for later and it will appear here."}
-            </p>
-
-            <Link
-              href="/"
-              className="
-                mt-4
-                rounded-full
-                bg-[#c8ff00]
-                px-5
-                py-2
-                text-[10px]
-                font-bold
-                text-black
-                transition
-                hover:bg-[#b7ed00]
-              "
-            >
-              Go to workouts
-            </Link>
-          </div>
         )}
+
       </div>
     </main>
   );
