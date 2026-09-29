@@ -1,58 +1,116 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useContext } from "react";
+import { usePathname } from "next/navigation";
+
+import { PlanContext } from "../../context/PlanContext";
 
 const Navbar = () => {
-  return (
-    <nav className="h-[68px] w-full border-b border-zinc-800 bg-[#0b0c0e]">
-      <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-8">
+  const { todayPlan, savedExercises } = useContext(PlanContext);
+  const pathname = usePathname();
 
-        <Link href="/" className="flex items-center gap-2">
+  
+  const isWorkoutPage =
+    pathname === "/" || pathname.startsWith("/Exercises");
+
+  const isMyPlanPage = pathname === "/my-plan";
+
+  return (
+    <nav className="w-full border-b border-zinc-800 bg-[#0b0c0e]">
+      <div className="mx-auto flex min-h-[68px] max-w-[1200px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+
+       
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
-          src="/logo.png"
-          alt="FITLOG Logo"
-          width={28}
-          height={28}
-          className="object-contain"
-         />
+            src="/logo.png"
+            alt="FITLOG Logo"
+            width={28}
+            height={28}
+            className="object-contain"
+          />
 
           <span className="text-[15px] font-bold tracking-wide text-white">
             FITLOG
           </span>
         </Link>
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-center gap-1 sm:gap-2">
+
+         
           <Link
             href="/"
-            className="rounded-full bg-[#17240b] px-4 py-1.5 text-[15px] font-semibold text-lime-400"
+            className={`
+              rounded-full px-3 py-1.5 text-xs font-semibold transition
+              sm:px-4 sm:text-[15px]
+              ${
+                isWorkoutPage
+                  ? "bg-[#17240b] text-lime-400"
+                  : "text-zinc-400 hover:text-white"
+              }
+            `}
           >
             Workouts
           </Link>
 
+         
           <Link
             href="/my-plan"
-            className="px-4 py-1.5 text-[14px] font-medium text-zinc-400 transition hover:text-white"
+            className={`
+              rounded-full px-3 py-1.5 text-xs font-medium transition
+              sm:px-4 sm:text-[14px]
+              ${
+                isMyPlanPage
+                  ? "bg-[#17240b] text-lime-400"
+                  : "text-zinc-400 hover:text-white"
+              }
+            `}
           >
             My Plan
           </Link>
         </div>
 
-        <div className="flex items-center gap-6 text-xs">
-          <div className="flex items-center gap-2 text-zinc-300">
-            <span className="text-[12px]">Plan</span>
+     
+        <div className="flex shrink-0 items-center gap-3 text-xs sm:gap-6">
 
-            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-lime-400 text-[9px] font-bold text-black">
-              0
+         
+          <Link
+            href="/my-plan?tab=today"
+            className="flex items-center gap-1.5 text-zinc-300 transition hover:text-white sm:gap-2"
+          >
+            <span className="hidden text-[12px] sm:inline">
+              Plan
             </span>
-          </div>
 
-          <div className="flex items-center gap-2 text-zinc-400">
-            <span className="text-[12px]">Saved</span>
-
-            <span className="flex h-4 w-4 items-center justify-center rounded-full border border-zinc-700 text-[9px] text-zinc-400">
-              0
+            <span className="text-[11px] sm:hidden">
+              P
             </span>
-          </div>
+
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-lime-400 px-1 text-[9px] font-bold text-black">
+              {todayPlan.length}
+            </span>
+          </Link>
+
+          
+          <Link
+            href="/my-plan?tab=saved"
+            className="flex items-center gap-1.5 text-zinc-400 transition hover:text-white sm:gap-2"
+          >
+            <span className="hidden text-[12px] sm:inline">
+              Saved
+            </span>
+
+            <span className="text-[11px] sm:hidden">
+              S
+            </span>
+
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full border border-zinc-700 px-1 text-[9px] text-zinc-400">
+              {savedExercises.length}
+            </span>
+          </Link>
+
         </div>
-
       </div>
     </nav>
   );
